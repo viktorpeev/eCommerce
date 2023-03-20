@@ -1,10 +1,16 @@
 import React from 'react';
 import './styles.scss';
 
+import Logo from './../../assets/baal.png';
+
 const Header = (props) =>{
     return(
         <header className='header'>
-        zdr
+        <div className='wrap'>
+            <div className='logo'>
+                <img src={Logo} alt='logo'/>
+            </div>
+        </div>
         </header>
     );
 };
