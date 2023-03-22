@@ -3,10 +3,7 @@ import Directory from "../../components/Directory";
 const Homepage = (props) =>{
     return(
         <section>
-            <h1>
-                <Directory/>
-
-            </h1>
+            <Directory/>
         </section>
     )
 }

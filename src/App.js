@@ -9,7 +9,6 @@ function App() {
         <Header />
         <Homepage/>
       </div>
-     <h1>yes</h1>
     </div>
   );
 }
