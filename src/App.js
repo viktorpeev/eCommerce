@@ -1,13 +1,14 @@
-import Header from './components/Header';
 import './default.scss';
+import { Route, Routes } from 'react-router-dom';
 
-// layouts
-
+// components
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 // pages
 import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
-import { Route, Routes } from 'react-router-dom';
+
 
 function App() {
   return (
@@ -15,10 +16,11 @@ function App() {
       <Header />
       <div className='main'>
         <Routes>
-          <Route path='/' />
-          <Route path='/register' element={<Registration />} />
+          <Route path='/' element={<Homepage />} />
+          <Route path='/registration' element={<Registration />} />
         </Routes>
       </div>
+      <Footer />
     </div>
   );
 }
