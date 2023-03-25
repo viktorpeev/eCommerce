@@ -1,5 +1,5 @@
 import './default.scss';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
 // components
 import Header from './components/Header';
@@ -10,7 +10,7 @@ import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
 import Login from './pages/Login';
 import { useEffect, useRef, useState } from 'react';
-import { auth } from './firebase/utilis';
+import { auth, handleUserProfile } from './firebase/utilis';
 
 
 function App() {
@@ -19,12 +19,14 @@ function App() {
   const authListener = useRef(null);
 
   useEffect(() => {
-    authListener.current = auth.onAuthStateChanged(userAuth => {
-      if (!userAuth) {
-        setCurrentUser(currentUser);
+    authListener.current = auth.onAuthStateChanged(async userAuth => {
+      if(userAuth){
+        const userRef = await handleUserProfile(userAuth);
+        userRef.onSnapshot(snapshot =>{
+          setCurrentUser({id:snapshot.id, ...snapshot.data()});
+        });
       }
-
-      setCurrentUser(userAuth);
+      setCurrentUser(currentUser);
     });
 
     return () =>{
@@ -39,7 +41,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Homepage currentUser={currentUser} />} />
           <Route path='/registration' element={<Registration currentUser={currentUser} />} />
-          <Route path='/login' element={<Login currentUser={currentUser} />} />
+          <Route path='/login' element={currentUser ? <Navigate to='/'/> : <Login currentUser={currentUser} />} />
         </Routes>
       </div>
       <Footer />
