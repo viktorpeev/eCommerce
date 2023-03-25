@@ -4,6 +4,7 @@ import Female from './../../assets/femoid-baal.jpg';
 import './styles.scss'
 
 const Directory = (props) => {
+    const {currentUser} = props;
     return (
         <div className="Directory">
             <div className="wrap">
@@ -15,7 +16,7 @@ const Directory = (props) => {
                 <div className="item" style={{ backgroundImage:`linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ),url(${Female})` }}>
                     <a href="/">
                         Shop Women
-                        </a>
+                    </a>
                 </div>
             </div>
         </div>
