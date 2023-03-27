@@ -40,7 +40,7 @@ function App() {
       <div className='main'>
         <Routes>
           <Route path='/' element={<Homepage currentUser={currentUser} />} />
-          <Route path='/registration' element={<Registration currentUser={currentUser} />} />
+          <Route path='/registration' element={currentUser ? <Navigate to='/'/> : <Registration currentUser={currentUser} />} />
           <Route path='/login' element={currentUser ? <Navigate to='/'/> : <Login currentUser={currentUser} />} />
         </Routes>
       </div>

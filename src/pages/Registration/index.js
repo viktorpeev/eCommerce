@@ -1,29 +1,62 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import './styles.scss';
 
+import { auth, handleUserProfile } from './../../firebase/utilis';
 import FormInput from './../../components/Forms/FormInput';
 import Button from './../../components/Forms/Button';
 const Registration = (proops) => {
-    const [state,setState] = useState({
-        displayName:'',
-        email:'',
-        password:'',
-        confirmPassword:''
-    });
 
-    const {displayName,email,password,confirmPassword} = state;
+    const initialState = {
+        displayName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        error: ''
+    }
+    const [state, setState] = useState(initialState);
 
     const handleChange = event => {
         const { name, value } = event.target;
         setState({ ...state, [name]: value });
     };
 
+    const handleFormSubmit = async event => {
+        event.preventDefault();
+
+        if (password !== confirmPassword) {
+            const err = ['Passwords do not match'];
+            setState({ error: err });
+            return;
+        }
+
+        try {
+            const { user } = await auth.createUserWithEmailAndPassword(email,password);
+
+            await handleUserProfile(user,{displayName});
+
+            setState(initialState);
+        } catch {
+            //console.log(err);
+        }
+
+    }
+    const { displayName, email, password, confirmPassword, error } = state;
+
     return (
         <div className='registration'>
             <div className='wrap'>
                 <h1>Signup</h1>
             </div>
-            <form>
+            {error.length > 0 && (
+                <ul>
+                    {
+                        error.map((err, index) => (
+                            <li key={index}>{err}</li>
+                        ))
+                    }
+                </ul>
+            )}
+            <form onSubmit={handleFormSubmit}>
                 <FormInput
                     type="text"
                     name="displayName"
@@ -47,7 +80,7 @@ const Registration = (proops) => {
                 />
                 <FormInput
                     type="text"
-                    name="password"
+                    name="confirmPassword"
                     value={confirmPassword}
                     placeholder="Confirm password"
                     onChange={handleChange}
