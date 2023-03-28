@@ -26,7 +26,7 @@ const Login = (props) => {
             await auth.signInWithEmailAndPassword(email,password);
             setState(initialState);
         } catch(err){
-            console.log(err);
+            // console.log(err);
         }
     }
     

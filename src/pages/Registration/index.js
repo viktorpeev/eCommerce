@@ -35,8 +35,8 @@ const Registration = (proops) => {
             await handleUserProfile(user,{displayName});
 
             setState(initialState);
-        } catch {
-            //console.log(err);
+        } catch(err) {
+            // console.log(err);
         }
 
     }

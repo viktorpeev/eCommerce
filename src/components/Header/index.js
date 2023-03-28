@@ -6,6 +6,12 @@ import Logo from './../../assets/baal.png';
 
 const Header = (props) => {
     const { currentUser } = props;
+
+
+    const logOut =()=>{
+        auth.signOut();
+        window.location.reload(false);
+    }
     return (
         <header className='header'>
             <div className='wrap'>
@@ -16,7 +22,7 @@ const Header = (props) => {
                 </div>
                 <div className='actions'>
                     {currentUser && (
-                        <p onClick={()=>auth.signOut()}>
+                        <p onClick={logOut}>
                             Logout
                         </p>
                     )}
