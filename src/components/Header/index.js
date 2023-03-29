@@ -23,9 +23,15 @@ const Header = (props) => {
                 </div>
                 <div className='actions'>
                     {currentUser && (
-                        <p onClick={logOut}>
-                            Logout
-                        </p>
+                        <>
+                            <Link to='/dashboard'>
+                                My Account
+                            </Link>
+                            <p onClick={logOut}>
+                                Logout
+                            </p>
+                        </>
+
                     )}
                     {!currentUser && (
                         <>

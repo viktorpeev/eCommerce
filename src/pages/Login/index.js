@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/Forms/Button";
 import { signInWithGoogle, auth } from "../../firebase/utilis";
-
+import { useNavigate } from "react-router-dom";
 import FormInput from './../../components/Forms/FormInput';
 
 const Login = (props) => {
@@ -13,6 +13,8 @@ const Login = (props) => {
     }
     const [state, setState] = useState(initialState);
     const { email, password } = state;
+
+    const navigate = useNavigate();
 
     const handleChange = event => {
         const { name, value } = event.target;
@@ -26,8 +28,28 @@ const Login = (props) => {
         try {
             await auth.signInWithEmailAndPassword(email, password);
             setState(initialState);
+            navigate('/');
         } catch (err) {
             console.log(err);
+        }
+    }
+
+    const google = async e=>{
+        e.preventDefault();
+        try {
+            await signInWithGoogle()
+            .then(()=>{
+                navigate('/');
+            }).catch(() => {
+                // const err = ['Email does not exist'];
+
+                // setState({ ...state, error: err })
+
+                //TODO display errors if login fails
+            });
+            
+        } catch (err) {
+            //console.log(err);
         }
     }
 
@@ -52,7 +74,7 @@ const Login = (props) => {
             </Link>
 
             <Button onClick={handleSubmit}>Sign in</Button>
-            <Button onClick={signInWithGoogle}>Sign in with Google</Button>
+            <Button onClick={google}>Sign in with Google</Button>
         </form>
     );
 };

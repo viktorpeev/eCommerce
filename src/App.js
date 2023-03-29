@@ -1,8 +1,11 @@
 import './default.scss';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
 import { setCurrentUser } from './redux/User/user.actions';
 import { connect } from 'react-redux';
+
+//hoc
+import WithAuth from './hoc/withAuth';
 
 // components
 import Header from './components/Header';
@@ -13,6 +16,7 @@ import Homepage from './pages/Homepage';
 import Registration from './pages/Registration';
 import Login from './pages/Login';
 import Recovery from './pages/Recovery';
+import Dashboard from './pages/Dashboard';
 
 // utils
 import { auth, handleUserProfile } from './firebase/utilis';
@@ -45,9 +49,11 @@ const App=(props)=> {
       <div className='main'>
         <Routes>
           <Route path='/' element={<Homepage />} />
-          <Route path='/registration' element={currentUser ? <Navigate to='/' /> : <Registration />} />
-          <Route path='/login' element={currentUser ? <Navigate to='/' /> : <Login />} />
+          <Route path='/registration' element={<Registration />} />
+          <Route path='/login' element={<Login />} />
           <Route path='/recovery' element={<Recovery />} />
+          <Route path='/dashboard' element={<WithAuth><Dashboard /></WithAuth>} /> 
+          {/* MSG accessing dashboard through url return login instead of dashboard */}
         </Routes>
       </div>
       <Footer />

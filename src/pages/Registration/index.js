@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import './styles.scss';
+import { useNavigate } from "react-router-dom";
 
 import { auth, handleUserProfile } from './../../firebase/utilis';
 import FormInput from './../../components/Forms/FormInput';
@@ -14,6 +15,7 @@ const Registration = (proops) => {
         error: ''
     }
     const [state, setState] = useState(initialState);
+    const navigate = useNavigate();
 
     const handleChange = event => {
         const { name, value } = event.target;
@@ -31,10 +33,9 @@ const Registration = (proops) => {
 
         try {
             const { user } = await auth.createUserWithEmailAndPassword(email,password);
-
             await handleUserProfile(user,{displayName});
-
             setState(initialState);
+            navigate('/');
         } catch(err) {
             // console.log(err);
         }
