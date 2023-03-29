@@ -4,7 +4,6 @@ import Female from './../../assets/femoid-baal.jpg';
 import './styles.scss'
 
 const Directory = (props) => {
-    const {currentUser} = props;
     return (
         <div className="Directory">
             <div className="wrap">

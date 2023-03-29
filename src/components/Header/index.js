@@ -3,12 +3,13 @@ import './styles.scss';
 import { Link } from 'react-router-dom';
 import { auth } from '../../firebase/utilis';
 import Logo from './../../assets/baal.png';
+import { connect } from 'react-redux';
 
 const Header = (props) => {
     const { currentUser } = props;
 
+    const logOut = () => {
 
-    const logOut =()=>{
         auth.signOut();
         window.location.reload(false);
     }
@@ -47,4 +48,8 @@ Header.defaultProps = {
     currentUser: null
 };
 
-export default Header;
+const mapStateToProps = ({ user }) => ({
+    currentUser: user.currentUser
+});
+
+export default connect(mapStateToProps, null)(Header);

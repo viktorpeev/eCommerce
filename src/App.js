@@ -1,6 +1,8 @@
 import './default.scss';
 import { Route, Routes, Navigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { setCurrentUser } from './redux/User/user.actions';
+import { connect } from 'react-redux';
 
 // components
 import Header from './components/Header';
@@ -16,36 +18,36 @@ import Recovery from './pages/Recovery';
 import { auth, handleUserProfile } from './firebase/utilis';
 
 
-function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+const App=(props)=> {
+  const { currentUser,setCurrentUser } = props;
 
   const authListener = useRef(null);
 
   useEffect(() => {
     authListener.current = auth.onAuthStateChanged(async userAuth => {
-      if(userAuth){
+      if (userAuth) {
         const userRef = await handleUserProfile(userAuth);
-        userRef.onSnapshot(snapshot =>{
-          setCurrentUser({id:snapshot.id, ...snapshot.data()});
+        userRef.onSnapshot(snapshot => {
+          setCurrentUser({ id: snapshot.id, ...snapshot.data() });
         });
       }
-      setCurrentUser(currentUser);
+      setCurrentUser(userAuth);
     });
 
-    return () =>{
+    return () => {
       authListener.current();
     }
-  }, [currentUser]);
+  }, [setCurrentUser]);
 
   return (
     <div className="App">
       <Header currentUser={currentUser} />
       <div className='main'>
         <Routes>
-          <Route path='/' element={<Homepage currentUser={currentUser} />} />
-          <Route path='/registration' element={currentUser ? <Navigate to='/'/> : <Registration currentUser={currentUser} />} />
-          <Route path='/login' element={currentUser ? <Navigate to='/'/> : <Login currentUser={currentUser} />} />
-          <Route path='/recovery' element={<Recovery/>}/>
+          <Route path='/' element={<Homepage />} />
+          <Route path='/registration' element={currentUser ? <Navigate to='/' /> : <Registration />} />
+          <Route path='/login' element={currentUser ? <Navigate to='/' /> : <Login />} />
+          <Route path='/recovery' element={<Recovery />} />
         </Routes>
       </div>
       <Footer />
@@ -53,4 +55,12 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser
+});
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
