@@ -3,10 +3,16 @@ import './styles.scss';
 import { Link } from 'react-router-dom';
 import { auth } from '../../firebase/utilis';
 import Logo from './../../assets/baal.png';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Header = (props) => {
-    const { currentUser } = props;
+
+
+    const mapState = ({ user }) => ({
+        currentUser: user.currentUser
+    });
+
+    const { currentUser } = useSelector(mapState);
 
     const logOut = () => {
 
@@ -54,8 +60,6 @@ Header.defaultProps = {
     currentUser: null
 };
 
-const mapStateToProps = ({ user }) => ({
-    currentUser: user.currentUser
-});
 
-export default connect(mapStateToProps, null)(Header);
+
+export default Header;
