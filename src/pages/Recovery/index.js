@@ -1,17 +1,42 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Button from "../../components/Forms/Button";
 import FormInput from "../../components/Forms/FormInput";
-import { auth } from "../../firebase/utilis";
 import { useNavigate } from 'react-router-dom';
-const Recovery = () => {
+import { useDispatch, useSelector } from "react-redux";
+import { resetPassword,resetAllAuthForms } from "../../redux/User/user.actions";
 
-    const initialState = {
-        email: '',
-        error: ''
-    }
+const mapState = ({ user }) => ({
+    resetPasswordSuccess: user.resetPasswordSuccess,
+    resetPasswordError: user.resetPasswordError
+});
+
+const Recovery = () => {
+    const { resetPasswordSuccess, resetPasswordError } = useSelector(mapState);
+    const initialState = useMemo (() => {
+        return {
+            email: '',
+            error: ''
+        }
+    },[]);
     const navigate = useNavigate();
     const [state, setState] = useState(initialState);
     const { email, error } = state;
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (resetPasswordSuccess) {
+            setState(initialState);
+            dispatch(resetAllAuthForms());
+            navigate('/');
+        }
+    }, [resetPasswordSuccess,initialState,navigate,dispatch])
+
+    useEffect(() => {
+        if (Array.isArray(resetPasswordError) && resetPasswordError.length > 0) {
+            setState({ ...state, error: resetPasswordError });
+        }
+
+    }, [resetPasswordError,state])
 
     const handleChange = event => {
         const { name, value } = event.target;
@@ -19,33 +44,12 @@ const Recovery = () => {
 
     };
 
-    const handleSubmit = async event => {
+    const handleSubmit = event => {
         event.preventDefault();
-
-
-        try {
-            const config = {
-                url: 'http://localhost:3000/login'
-                //TODO: da dobavq url na proekta sled kato go hostna
-            }
-
-            await auth.sendPasswordResetEmail(email, config)
-                .then(() => {
-                    navigate('/login');
-                })
-                .catch(() => {
-                    const err = ['Email does not exist'];
-
-                    setState({ ...state, error: err })
-                })
-
-        } catch (err) {
-            //console.log(err)
-        }
+        dispatch(resetPassword({ email }));
     }
     return (
         <form onSubmit={handleSubmit}>
-
             {error.length > 0 && (
                 <ul>
                     {

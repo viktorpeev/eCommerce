@@ -1,18 +1,28 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/Forms/Button";
-import { signInWithGoogle, auth } from "../../firebase/utilis";
 import { useNavigate } from "react-router-dom";
 import FormInput from './../../components/Forms/FormInput';
+import { useDispatch, useSelector } from "react-redux";
+import { signInUser,signInWithGoogle,resetAllAuthForms } from "../../redux/User/user.actions";
+
+const mapState = ({ user }) => ({
+    signInSuccess: user.signInSuccess
+});
 
 const Login = (props) => {
 
-    const initialState = {
-        email: '',
-        password: ''
-    }
+    const initialState = useMemo(() => {
+        return {
+            email: '',
+            password: ''
+        }
+    },[]);
+
     const [state, setState] = useState(initialState);
     const { email, password } = state;
+    const dispatch = useDispatch();
+    const { signInSuccess } = useSelector(mapState);
 
     const navigate = useNavigate();
 
@@ -21,36 +31,22 @@ const Login = (props) => {
         setState({ ...state, [name]: value });
 
     };
-
-
-    const handleSubmit = async e => {
-        e.preventDefault();
-        try {
-            await auth.signInWithEmailAndPassword(email, password);
+    useEffect(() => {
+        if (signInSuccess) {
             setState(initialState);
+            dispatch(resetAllAuthForms());
             navigate('/');
-        } catch (err) {
-            console.log(err);
         }
+    }, [signInSuccess, initialState, navigate,dispatch]);
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        dispatch(signInUser({email, password}));
     }
 
-    const google = async e=>{
+    const handleGoogle = async e => {
         e.preventDefault();
-        try {
-            await signInWithGoogle()
-            .then(()=>{
-                navigate('/');
-            }).catch(() => {
-                // const err = ['Email does not exist'];
-
-                // setState({ ...state, error: err })
-
-                //TODO display errors if login fails
-            });
-            
-        } catch (err) {
-            //console.log(err);
-        }
+        dispatch(signInWithGoogle());
     }
 
     return (
@@ -73,8 +69,8 @@ const Login = (props) => {
                 <p>Forgot password</p>
             </Link>
 
-            <Button onClick={handleSubmit}>Sign in</Button>
-            <Button onClick={google}>Sign in with Google</Button>
+            <Button type='submit'>Sign in</Button>
+            <Button onClick={handleGoogle}>Sign in with Google</Button>
         </form>
     );
 };

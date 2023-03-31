@@ -1,8 +1,7 @@
 import './default.scss';
 import { Route, Routes } from 'react-router-dom';
 import { useEffect, useRef } from 'react';
-import { setCurrentUser } from './redux/User/user.actions';
-import { connect } from 'react-redux';
+import { setCurrentUser}  from './redux/User/user.actions';
 
 //hoc
 import WithAuth from './hoc/withAuth';
@@ -20,10 +19,11 @@ import Dashboard from './pages/Dashboard';
 
 // utils
 import { auth, handleUserProfile } from './firebase/utilis';
+import { useDispatch } from 'react-redux';
 
 
 const App=(props)=> {
-  const { currentUser,setCurrentUser } = props;
+  const dispatch = useDispatch();
 
   const authListener = useRef(null);
 
@@ -32,20 +32,20 @@ const App=(props)=> {
       if (userAuth) {
         const userRef = await handleUserProfile(userAuth);
         userRef.onSnapshot(snapshot => {
-          setCurrentUser({ id: snapshot.id, ...snapshot.data() });
+          dispatch(setCurrentUser({ id: snapshot.id, ...snapshot.data() }));
         });
       }
-      setCurrentUser(userAuth);
+      dispatch(setCurrentUser(userAuth));
     });
 
     return () => {
       authListener.current();
     }
-  }, [setCurrentUser]);
+  }, [dispatch]);
 
   return (
     <div className="App">
-      <Header currentUser={currentUser} />
+      <Header />
       <div className='main'>
         <Routes>
           <Route path='/' element={<Homepage />} />
@@ -61,12 +61,4 @@ const App=(props)=> {
   );
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
-});
-
-const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

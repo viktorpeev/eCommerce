@@ -1,21 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import './styles.scss';
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signUpUser,resetAllAuthForms } from "../../redux/User/user.actions";
 
-import { auth, handleUserProfile } from './../../firebase/utilis';
 import FormInput from './../../components/Forms/FormInput';
 import Button from './../../components/Forms/Button';
-const Registration = (proops) => {
 
-    const initialState = {
+const mapState = ({ user }) => ({
+    signUpSuccess: user.signUpSuccess,
+    signUpError: user.signUpError
+})
+
+const Registration = (proops) => {
+    const { signUpSuccess, signUpError } = useSelector(mapState);
+    const initialState = useMemo(()=>{
+        return{
         displayName: '',
         email: '',
         password: '',
         confirmPassword: '',
         error: ''
-    }
+        }
+    },[])
+
     const [state, setState] = useState(initialState);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleChange = event => {
         const { name, value } = event.target;
@@ -24,23 +35,29 @@ const Registration = (proops) => {
 
     const handleFormSubmit = async event => {
         event.preventDefault();
-
-        if (password !== confirmPassword) {
-            const err = ['Passwords do not match'];
-            setState({ error: err });
-            return;
-        }
-
-        try {
-            const { user } = await auth.createUserWithEmailAndPassword(email,password);
-            await handleUserProfile(user,{displayName});
-            setState(initialState);
-            navigate('/');
-        } catch(err) {
-            // console.log(err);
-        }
-
+        dispatch(signUpUser({
+            displayName,
+            email,
+            password,
+            confirmPassword
+        }));
     }
+
+    useEffect(() => {
+        if (signUpSuccess) {
+            setState(initialState);
+            dispatch(resetAllAuthForms());
+            navigate('/');
+        }
+    }, [signUpSuccess,initialState,navigate,dispatch]);
+
+    useEffect(() => {
+        if (Array.isArray(signUpError) && signUpError.length > 0) {
+            setState({ ...state, error: signUpError });
+        }
+
+    }, [signUpError,state]);
+
     const { displayName, email, password, confirmPassword, error } = state;
 
     return (
