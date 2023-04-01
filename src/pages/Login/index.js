@@ -4,10 +4,10 @@ import Button from "../../components/Forms/Button";
 import { useNavigate } from "react-router-dom";
 import FormInput from './../../components/Forms/FormInput';
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser,signInWithGoogle,resetAllAuthForms } from "../../redux/User/user.actions";
+import { emailSignInStart,signInWithGoogle } from "../../redux/User/user.actions";
 
 const mapState = ({ user }) => ({
-    signInSuccess: user.signInSuccess
+    currentUser: user.currentUser
 });
 
 const Login = (props) => {
@@ -22,7 +22,7 @@ const Login = (props) => {
     const [state, setState] = useState(initialState);
     const { email, password } = state;
     const dispatch = useDispatch();
-    const { signInSuccess } = useSelector(mapState);
+    const { currentUser } = useSelector(mapState);
 
     const navigate = useNavigate();
 
@@ -32,16 +32,16 @@ const Login = (props) => {
 
     };
     useEffect(() => {
-        if (signInSuccess) {
+        if (currentUser) {
             setState(initialState);
-            dispatch(resetAllAuthForms());
             navigate('/');
         }
-    }, [signInSuccess, initialState, navigate,dispatch]);
+    }, [currentUser, initialState, navigate,dispatch]);
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch(signInUser({email, password}));
+        dispatch(emailSignInStart({email, password}));
+
     }
 
     const handleGoogle = async e => {
