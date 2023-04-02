@@ -3,8 +3,12 @@ import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
 import { checkUserSession } from './redux/User/user.actions';
 
+// components
+import AdminToolbar from './components/AdminToolbar';
+
 //hoc
 import WithAuth from './hoc/withAuth';
+import WithAdminAuth from './hoc/withAdminAuth';
 
 // components
 import Header from './components/Header';
@@ -16,6 +20,7 @@ import Registration from './pages/Registration';
 import Login from './pages/Login';
 import Recovery from './pages/Recovery';
 import Dashboard from './pages/Dashboard';
+import Admin from './pages/Admin';
 
 // utils
 import { useDispatch } from 'react-redux';
@@ -33,6 +38,7 @@ const App = (props) => {
   return (
     <div className="App">
       <Header />
+      <AdminToolbar />
       <div className='main'>
         <Routes>
           <Route path='/' element={<Homepage />} />
@@ -40,6 +46,7 @@ const App = (props) => {
           <Route path='/login' element={<Login />} />
           <Route path='/recovery' element={<Recovery />} />
           <Route path='/dashboard' element={<WithAuth><Dashboard /></WithAuth>} />
+          <Route path='/admin' element={<WithAdminAuth><Admin /></WithAdminAuth>} />
           {/* MSG accessing dashboard through url return login instead of dashboard */}
         </Routes>
       </div>
