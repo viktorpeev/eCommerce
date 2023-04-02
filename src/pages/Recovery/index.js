@@ -3,15 +3,15 @@ import Button from "../../components/Forms/Button";
 import FormInput from "../../components/Forms/FormInput";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { resetPassword,resetAllAuthForms } from "../../redux/User/user.actions";
+import { resetPasswordStart, resetUserState } from "../../redux/User/user.actions";
 
 const mapState = ({ user }) => ({
     resetPasswordSuccess: user.resetPasswordSuccess,
-    resetPasswordError: user.resetPasswordError
+    userErr: user.userErr,
 });
 
 const Recovery = () => {
-    const { resetPasswordSuccess, resetPasswordError } = useSelector(mapState);
+    const { resetPasswordSuccess, userErr } = useSelector(mapState);
     const initialState = useMemo (() => {
         return {
             email: '',
@@ -26,17 +26,17 @@ const Recovery = () => {
     useEffect(() => {
         if (resetPasswordSuccess) {
             setState(initialState);
-            dispatch(resetAllAuthForms());
+            dispatch(resetUserState());
             navigate('/');
         }
     }, [resetPasswordSuccess,initialState,navigate,dispatch])
 
     useEffect(() => {
-        if (Array.isArray(resetPasswordError) && resetPasswordError.length > 0) {
-            setState({ ...state, error: resetPasswordError });
+        if (Array.isArray(userErr) && userErr.length > 0) {
+            setState({ ...state, error: userErr });
         }
 
-    }, [resetPasswordError,state])
+    }, [userErr,state])
 
     const handleChange = event => {
         const { name, value } = event.target;
@@ -46,7 +46,7 @@ const Recovery = () => {
 
     const handleSubmit = event => {
         event.preventDefault();
-        dispatch(resetPassword({ email }));
+        dispatch(resetPasswordStart({ email }));
     }
     return (
         <form onSubmit={handleSubmit}>

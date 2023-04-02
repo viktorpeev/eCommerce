@@ -4,7 +4,7 @@ import Button from "../../components/Forms/Button";
 import { useNavigate } from "react-router-dom";
 import FormInput from './../../components/Forms/FormInput';
 import { useDispatch, useSelector } from "react-redux";
-import { emailSignInStart,signInWithGoogle } from "../../redux/User/user.actions";
+import { emailSignInStart, googleSignInStart } from "../../redux/User/user.actions";
 
 const mapState = ({ user }) => ({
     currentUser: user.currentUser
@@ -46,7 +46,7 @@ const Login = (props) => {
 
     const handleGoogle = async e => {
         e.preventDefault();
-        dispatch(signInWithGoogle());
+        dispatch(googleSignInStart());
     }
 
     return (

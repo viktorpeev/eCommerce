@@ -2,18 +2,18 @@ import React, { useEffect, useMemo, useState } from "react";
 import './styles.scss';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { signUpUser,resetAllAuthForms } from "../../redux/User/user.actions";
+import { signUpUserStart } from "../../redux/User/user.actions";
 
 import FormInput from './../../components/Forms/FormInput';
 import Button from './../../components/Forms/Button';
 
 const mapState = ({ user }) => ({
-    signUpSuccess: user.signUpSuccess,
-    signUpError: user.signUpError
-})
+    currentUser: user.currentUser,
+    userErr: user.userErr
+});
 
-const Registration = (proops) => {
-    const { signUpSuccess, signUpError } = useSelector(mapState);
+const Registration = (props) => {
+    const { currentUser, userErr } = useSelector(mapState);
     const initialState = useMemo(()=>{
         return{
         displayName: '',
@@ -35,7 +35,7 @@ const Registration = (proops) => {
 
     const handleFormSubmit = async event => {
         event.preventDefault();
-        dispatch(signUpUser({
+        dispatch(signUpUserStart({
             displayName,
             email,
             password,
@@ -44,19 +44,18 @@ const Registration = (proops) => {
     }
 
     useEffect(() => {
-        if (signUpSuccess) {
+        if (currentUser) {
             setState(initialState);
-            dispatch(resetAllAuthForms());
             navigate('/');
         }
-    }, [signUpSuccess,initialState,navigate,dispatch]);
+    }, [currentUser,initialState,navigate,dispatch]);
 
     useEffect(() => {
-        if (Array.isArray(signUpError) && signUpError.length > 0) {
-            setState({ ...state, error: signUpError });
+        if (Array.isArray(userErr) && userErr.length > 0) {
+            setState({ ...state, error: userErr });
         }
 
-    }, [signUpError,state]);
+    }, [userErr,state]);
 
     const { displayName, email, password, confirmPassword, error } = state;
 
