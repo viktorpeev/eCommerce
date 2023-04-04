@@ -3,7 +3,6 @@ import './styles.scss';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUserStart } from "../../redux/User/user.actions";
-
 import FormInput from './../../components/Forms/FormInput';
 import Button from './../../components/Forms/Button';
 
