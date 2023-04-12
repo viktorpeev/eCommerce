@@ -27,6 +27,7 @@ import Admin from './pages/Admin';
 
 // utils
 import { useDispatch } from 'react-redux';
+import Search from './pages/Search';
 
 
 const App = (props) => {
@@ -45,6 +46,7 @@ const App = (props) => {
       <div className='main'>
         <Routes>
           <Route path='/' element={<Homepage />} />
+          <Route path='/search' element={<Search />} />
           <Route path='/registration' element={<Registration />} />
           <Route path='/login' element={<Login />} />
           <Route path='/recovery' element={<Recovery />} />

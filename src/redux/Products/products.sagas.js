@@ -31,7 +31,6 @@ export function* onAddProductStart() {
 
 export function* fetchProducts({ payload }) {
   try {
-
     const products = yield handleFetchProducts(payload);
     yield put(
       setProducts(products)
