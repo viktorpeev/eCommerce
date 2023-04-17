@@ -25,7 +25,17 @@ const Header = (props) => {
                         <img src={Logo} alt='logo' />
                     </Link>
                 </div>
+
                 <div className='actions'>
+                    <div>
+                        <Link to='/'>
+                            Home
+                        </Link>
+                        <Link to='/search'>
+                            Search
+                        </Link>
+                    </div>
+
                     {currentUser && (
                         <>
                             <Link to='/dashboard'>
