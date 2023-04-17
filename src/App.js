@@ -47,6 +47,7 @@ const App = (props) => {
         <Routes>
           <Route path='/' element={<Homepage />} />
           <Route path='/search' element={<Search />} />
+          <Route path='/search/:filterType' element={<Search />} />
           <Route path='/registration' element={<Registration />} />
           <Route path='/login' element={<Login />} />
           <Route path='/recovery' element={<Recovery />} />
