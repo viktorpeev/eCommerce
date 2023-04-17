@@ -4,6 +4,7 @@ import { fetchProductsStart } from "../../redux/Products/products.actions";
 import Product from "./Product";
 import FormSelect from "../Forms/FormSelect";
 import { useNavigate, useParams } from "react-router-dom";
+import LoadMore from "../LoadMore";
 const mapState = ({ productsData }) => ({
     products: productsData.products
 });
@@ -14,13 +15,13 @@ const ProductResults = () => {
     const navigate = useNavigate();
     const { filterType } = useParams();
 
-    const { data } = products;
+    const { data, queryDoc, isLastPage } = products;
 
     useEffect(() => {
         dispatch(
-            fetchProductsStart({filterType})
+            fetchProductsStart({ filterType })
         );
-    }, [dispatch,filterType]);
+    }, [dispatch, filterType]);
 
     const handleFilter = (e) => {
         const nextFilter = e.target.value;
@@ -52,6 +53,20 @@ const ProductResults = () => {
         handleChange: handleFilter
     };
 
+    const handleLoadMore = () => {
+        dispatch(
+            fetchProductsStart({
+                filterType,
+                startAfterDoc: queryDoc,
+                persistProducts: data
+            })
+        )
+    };
+
+    const configLoadMore = {
+        onLoadMoreEvt: handleLoadMore,
+    };
+
     return (
         <>
             <h1>
@@ -69,8 +84,12 @@ const ProductResults = () => {
                 };
                 return (
                     <Product key={pos} {...configProduct} />
+
                 );
             })}
+            {!isLastPage && (
+                <LoadMore {...configLoadMore} />
+            )}
         </>
     );
 };
