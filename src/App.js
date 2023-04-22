@@ -24,6 +24,7 @@ import Login from './pages/Login';
 import Recovery from './pages/Recovery';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
+import ProductDetails from './pages/ProductDetails';
 
 // utils
 import { useDispatch } from 'react-redux';
@@ -53,6 +54,7 @@ const App = (props) => {
           <Route path='/recovery' element={<Recovery />} />
           <Route path='/dashboard' element={<WithAuth><Dashboard /></WithAuth>} />
           <Route path='/admin' element={<WithAdminAuth><AdminLayout><Admin /></AdminLayout></WithAdminAuth>} />
+          <Route path="/product/:productID" element={<ProductDetails />}/>
           {/* MSG accessing dashboard through url return login instead of dashboard */}
         </Routes>
       </div>

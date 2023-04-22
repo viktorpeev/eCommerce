@@ -1,27 +1,28 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProductsStart } from "../../redux/Products/products.actions";
-import Product from "./Product";
-import FormSelect from "../Forms/FormSelect";
-import { useNavigate, useParams } from "react-router-dom";
-import LoadMore from "../LoadMore";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fetchProductsStart } from './../../redux/Products/products.actions';
+import Product from './Product';
+import FormSelect from '../Forms/FormSelect';
+import LoadMore from './../LoadMore';
+
 const mapState = ({ productsData }) => ({
     products: productsData.products
 });
 
 const ProductResults = () => {
     const dispatch = useDispatch();
-    const { products } = useSelector(mapState);
     const navigate = useNavigate();
     const { filterType } = useParams();
+    const { products } = useSelector(mapState);
 
     const { data, queryDoc, isLastPage } = products;
 
     useEffect(() => {
         dispatch(
             fetchProductsStart({ filterType })
-        );
-    }, [dispatch, filterType]);
+        )
+    }, [filterType, dispatch]);
 
     const handleFilter = (e) => {
         const nextFilter = e.target.value;
@@ -30,13 +31,14 @@ const ProductResults = () => {
 
     if (!Array.isArray(data)) return null;
     if (data.length < 1) {
-        console.log(products.length)
         return (
-            <>
-                No search results
-            </>
+            <div className="products">
+                <p>
+                    No search results.
+                </p>
+            </div>
         );
-    };
+    }
 
     const configFilters = {
         defaultValue: filterType,
@@ -68,29 +70,35 @@ const ProductResults = () => {
     };
 
     return (
-        <>
+        <div className="products">
+
             <h1>
                 Browse Products
             </h1>
-            <FormSelect {...configFilters} />
-            {data.map((product, pos) => {
-                const { productThumbnail, productName, productPrice } = product;
-                if (!productThumbnail || !productName ||
-                    typeof productPrice === 'undefined') return null;
-                const configProduct = {
-                    productThumbnail,
-                    productName,
-                    productPrice
-                };
-                return (
-                    <Product key={pos} {...configProduct} />
 
-                );
-            })}
+            <FormSelect {...configFilters} />
+
+            <div className="productResults">
+                {data.map((product, pos) => {
+                    const { productThumbnail, productName, productPrice } = product;
+                    if (!productThumbnail || !productName ||
+                        typeof productPrice === 'undefined') return null;
+
+                    const configProduct = {
+                        ...product
+                    };
+
+                    return (
+                        <Product key={pos} {...configProduct} />
+                    );
+                })}
+            </div>
+
             {!isLastPage && (
                 <LoadMore {...configLoadMore} />
             )}
-        </>
+
+        </div>
     );
 };
 
