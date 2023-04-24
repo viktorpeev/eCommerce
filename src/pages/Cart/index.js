@@ -1,9 +1,10 @@
 import React from 'react';
+import Checkout from '../../components/Checkout';
 
-const Cart = () => {
+const Cart = ({}) => {
   return (
     <div>
-      this is cart
+      <Checkout />
     </div>
   );
 }
