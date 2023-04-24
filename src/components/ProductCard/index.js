@@ -41,7 +41,7 @@ const ProductCard = () => {
     dispatch(
       addProduct(product)
     );
-    // navigate('/cart');
+    navigate('/cart');
   }
 
   const configAddToCartBtn = {
